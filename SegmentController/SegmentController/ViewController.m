@@ -11,6 +11,8 @@
 #import "TwoController.h"
 #import "PageController.h"
 #import "MainScrollController.h"
+#import "ListOneController.h"
+#import "ListTwoController.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -71,11 +73,12 @@
 //    pageController.headView = headView;
 //    [self.navigationController pushViewController:pageController animated:YES];
     
+    
+    ListOneController *oneController = [ListOneController new];
+    ListTwoController *twoController = [ListTwoController new];
     MainScrollController *mainController = [[MainScrollController alloc] init];
+    mainController.controllerArray = @[oneController, twoController];
     [self.navigationController pushViewController:mainController animated:YES];
-//
-//    self.testTableView.contentInset = UIEdgeInsetsMake(100, 0, 0, 0);
-//    self.testTableView.contentOffset = CGPointMake(0, -150);
 }
 
 

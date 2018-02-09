@@ -1,5 +1,5 @@
 //
-//  TestController.h
+//  HorizonPageCell.h
 //  SegmentController
 //
 //  Created by MenThu on 2018/2/9.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TestController : UIViewController
+@interface HorizonPageCell : UITableViewCell
+
+@property (nonatomic, weak) NSArray <UIViewController *> *controllerArray;
 
 @end

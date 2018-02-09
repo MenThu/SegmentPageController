@@ -39,7 +39,7 @@ NSString * const SubScrollViewDidScroll = @"SubScrollViewDidScroll";
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset{
     CGPoint targetOffset = CGPointMake(targetContentOffset->x, targetContentOffset->y);
-    NSLog(@"targetOffset=[%@],Veloticy=[%@]", NSStringFromCGPoint(targetOffset), NSStringFromCGPoint(velocity));
+//    NSLog(@"targetOffset=[%@],Veloticy=[%@]", NSStringFromCGPoint(targetOffset), NSStringFromCGPoint(velocity));
     if (targetOffset.y < self.maxOffset && targetOffset.y > self.minOffset) {
         CGFloat middleOffsetY = (self.maxOffset + self.minOffset)/2;
         if (targetOffset.y > middleOffsetY) {

@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CommonTableController.h"
 
 @interface MainScrollController : UIViewController
+
+@property (nonatomic, strong) NSArray <CommonTableController *> *controllerArray;
 
 @end

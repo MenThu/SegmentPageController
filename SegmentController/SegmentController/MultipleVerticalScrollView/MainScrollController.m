@@ -8,93 +8,109 @@
 
 #import "MainScrollController.h"
 #import "HitTestView.h"
-#import "TestController.h"
+#import "MultipleTable.h"
+#import "HorizonPageCell.h"
 #import <Masonry.h>
 
-@interface MainScrollController ()
+@interface MainScrollController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, weak) HitTestView *subView1;
-@property (nonatomic, weak) HitTestView *subView2;
+@property (nonatomic, weak) MultipleTable *bottomTableView;
+@property (nonatomic, strong) UIView *tableHeadView;
+@property (nonatomic, assign) CGFloat tableHeadHeight;
+@property (nonatomic, assign) CGFloat sectionHeadHeight;
+@property (nonatomic, assign) CGFloat cellHeight;
 
 @end
 
 @implementation MainScrollController
 
+#pragma mark - LifeCircle
 - (void)loadView{
     HitTestView *view = [HitTestView new];
+    view.frame = [UIScreen mainScreen].bounds;
     view.backgroundColor = [UIColor whiteColor];
-//    view.bounds = [UIScreen mainScreen].bounds.size;
     view.viewName = @"MainControllerView";
     self.view = view;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    __weak typeof(self) weakSelf = self;
-    
-    HitTestView *subView1 = [HitTestView new];
-    subView1.viewName = @"subView1";
-    subView1.backgroundColor = [UIColor orangeColor];
-    
-    
-    TestController *childController = [[TestController alloc] init];
-    [self addChildViewController:childController];
-    
-    [self.view addSubview:childController.view];
-    [self.view addSubview:(_subView1 = subView1)];
-    
-    
-    
-    
-    [subView1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.view).offset(80);
-        make.right.equalTo(weakSelf.view.mas_centerX).offset(-50);
-        make.size.mas_equalTo(CGSizeMake(100, 100));
-    }];
-    
-//    [subView2 mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(subView1);
-//        make.left.equalTo(weakSelf.view.mas_centerX).offset(50);
-//        make.size.equalTo(subView1);
-//    }];
-    
-    [childController.view mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(weakSelf.view.mas_centerY);
-        make.left.right.equalTo(weakSelf.view);
-        make.size.equalTo(weakSelf.view);
-    }];
-}
-
-- (HitTestView *)subView2{
-    if (_subView2 == nil) {
-        
-        HitTestView *subView2 = [HitTestView new];
-        subView2.viewName = @"subView2";
-        subView2.backgroundColor = [UIColor yellowColor];
-        
-        HitTestView *subViewInSubView2 = [HitTestView new];
-        subViewInSubView2.viewName = @"subViewInSubView2";
-        subViewInSubView2.backgroundColor = [UIColor blackColor];
-        [subView2 addSubview:subViewInSubView2];
-        
-        [subViewInSubView2 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.bottom.equalTo(subView2);
-            make.size.mas_equalTo(CGSizeMake(50, 50));
-        }];
-        
-        [self.view addSubview:(_subView2 = subView2)];
+    if (@available(iOS 11, *)) {
+        [UIScrollView appearance].contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }else{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored"-Wdeprecated-declarations"
+        self.automaticallyAdjustsScrollViewInsets = NO;
+#pragma clang diagnostic pop
     }
-    return _subView2;
+    self.tableHeadHeight = 150.f;
+    self.sectionHeadHeight = 30.f;
+    self.cellHeight = CGRectGetHeight(self.view.bounds) - self.sectionHeadHeight;
+    
+    self.tableHeadView = [UIView new];
+    self.tableHeadView.backgroundColor = [UIColor orangeColor];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    NSLog(@"[%@][%s]", NSStringFromClass([self class]), sel_getName(_cmd));
+    self.bottomTableView.frame = self.view.bounds;
+    self.tableHeadView.bounds = CGRectMake(0, 0, CGRectGetWidth(self.bottomTableView.frame), self.tableHeadHeight);
+    self.bottomTableView.tableHeaderView = self.tableHeadView;
 }
-*/
+
+#pragma mark - Getter
+- (MultipleTable *)bottomTableView{
+    if (_bottomTableView == nil) {
+        MultipleTable *bottomTableView = [[MultipleTable alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        bottomTableView.showsVerticalScrollIndicator = NO;
+//        bottomTableView.bounces = NO;
+        bottomTableView.dataSource = self;
+        bottomTableView.delegate = self;
+        [bottomTableView registerClass:[HorizonPageCell class] forCellReuseIdentifier:@"HorizonPageCell"];
+        [self.view addSubview:(_bottomTableView = bottomTableView)];
+    }
+    return _bottomTableView;
+}
+
+#pragma mark - Setter
+- (void)setControllerArray:(NSArray<CommonTableController *> *)controllerArray{
+    if ([_controllerArray isKindOfClass:[NSArray class]] && _controllerArray.count > 0) {
+        for (CommonTableController *controller in _controllerArray) {
+            [controller removeFromParentViewController];
+        }
+    }
+    _controllerArray = controllerArray;
+    for (CommonTableController *controller in _controllerArray) {
+        [self addChildViewController:controller];
+    }
+    [self.bottomTableView reloadData];
+}
+
+#pragma mark - UITableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 1;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UIView *sectionHead = [[UIView alloc] init];
+    sectionHead.backgroundColor = [UIColor blackColor];
+    return sectionHead;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return self.sectionHeadHeight;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    HorizonPageCell *horizonCell = [tableView dequeueReusableCellWithIdentifier:@"HorizonPageCell" forIndexPath:indexPath];
+    horizonCell.backgroundColor = [UIColor cyanColor];
+    horizonCell.controllerArray = self.controllerArray;
+    return horizonCell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return self.cellHeight;
+}
 
 @end
