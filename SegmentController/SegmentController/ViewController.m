@@ -10,6 +10,7 @@
 #import "OneController.h"
 #import "TwoController.h"
 #import "PageController.h"
+#import "MainScrollController.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -62,14 +63,17 @@
 }
 
 - (IBAction)push2Controller:(UIButton *)sender {
-    OneController *one = [[OneController alloc] init];
-    TwoController *two = [[TwoController alloc] init];
-    PageHeadView *headView = [[PageHeadView alloc] init];
-    PageController *pageController = [[PageController alloc] init];
-    pageController.pageArray = @[one, two];
-    pageController.headView = headView;
-    [self.navigationController pushViewController:pageController animated:YES];
+//    OneController *one = [[OneController alloc] init];
+//    TwoController *two = [[TwoController alloc] init];
+//    PageHeadView *headView = [[PageHeadView alloc] init];
+//    PageController *pageController = [[PageController alloc] init];
+//    pageController.pageArray = @[one, two];
+//    pageController.headView = headView;
+//    [self.navigationController pushViewController:pageController animated:YES];
     
+    MainScrollController *mainController = [[MainScrollController alloc] init];
+    [self.navigationController pushViewController:mainController animated:YES];
+//
 //    self.testTableView.contentInset = UIEdgeInsetsMake(100, 0, 0, 0);
 //    self.testTableView.contentOffset = CGPointMake(0, -150);
 }
