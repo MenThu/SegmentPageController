@@ -181,17 +181,40 @@ static void *SegmentControllerContentScrollViewOffset = &SegmentControllerConten
                         change:(NSDictionary *)change
                        context:(void *)context {
     if (context == &SegmentControllerContentScrollViewOffset && _contentViewArray[_currentPage] == object) {
-        CGFloat newOffsetY = [change[NSKeyValueChangeNewKey] CGPointValue].y;
-        CGFloat height;
-        if (newOffsetY >= -self.minHeight) {
-            height = self.minHeight;
-        }else if (newOffsetY <= -self.maxHeight){
-            height = self.maxHeight;
-        }else{
-            height = fabs(newOffsetY);
-        }
-        self.customNaviBar.frame = CGRectMake(0, 0, self.customNaviBar.frame.size.width, height);
-        self.pageHeadHeight[_currentPage] = @(height);
+//        CGFloat newOffsetY = [change[NSKeyValueChangeNewKey] CGPointValue].y
+//        CGFloat height;
+//        if (newOffsetY >= -self.minHeight) {
+//            height = self.minHeight;
+//        }else if (newOffsetY <= -self.maxHeight){
+//            height = self.maxHeight;
+//        }else{
+//            height = fabs(newOffsetY);
+//        }
+//        self.customNaviBar.frame = CGRectMake(0, 0, self.customNaviBar.frame.size.width, height);
+//        self.pageHeadHeight[_currentPage] = @(height);
+        
+//        UIScrollView *scrollView = (UIScrollView *)object;
+//        if (scrollView.isDragging) {
+//            NSLog(@"reset");
+//            CGPoint oldOffset = [change[NSKeyValueChangeOldKey] CGPointValue];
+//            scrollView.contentOffset = oldOffset;
+//        }
+//        CGFloat newOffsetY = [change[NSKeyValueChangeNewKey] CGPointValue].y;
+//        if (newOffsetY >= -self.maxHeight && newOffsetY <= -self.minHeight) {
+//            return;
+//        }
+//
+//
+//        CGFloat height;
+//        if (newOffsetY >= -self.minHeight) {
+//            height = self.minHeight;
+//        }else if (newOffsetY <= -self.maxHeight){
+//            height = self.maxHeight;
+//        }else{
+//            height = fabs(newOffsetY);
+//        }
+//        self.customNaviBar.frame = CGRectMake(0, 0, self.customNaviBar.frame.size.width, height);
+//        self.pageHeadHeight[_currentPage] = @(height);
     }
 }
 
