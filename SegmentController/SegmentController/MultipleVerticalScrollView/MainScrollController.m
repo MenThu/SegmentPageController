@@ -7,30 +7,40 @@
 //
 
 #import "MainScrollController.h"
-#import "HitTestView.h"
-#import "MultipleTable.h"
 #import "HorizonPageCell.h"
+#import "MultipleTable.h"
 #import <Masonry.h>
 
 @interface MainScrollController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, weak) MultipleTable *bottomTableView;
+@property (nonatomic, weak) UITableView *bottomTableView;
 @property (nonatomic, strong) UIView *tableHeadView;
 @property (nonatomic, assign) CGFloat tableHeadHeight;
-@property (nonatomic, assign) CGFloat sectionHeadHeight;
+@property (nonatomic, strong) UIView *sectionView;
+@property (nonatomic, assign) CGFloat sectionHeight;
+@property (nonatomic, strong) NSArray<CommonTableController *> *controllerArray;
 @property (nonatomic, assign) CGFloat cellHeight;
+@property (nonatomic, weak) UIScrollView *currentListView;
+@property (nonatomic, assign) CGFloat lastOffsetY;
 
 @end
 
 @implementation MainScrollController
 
 #pragma mark - LifeCircle
-- (void)loadView{
-    HitTestView *view = [HitTestView new];
-    view.frame = [UIScreen mainScreen].bounds;
-    view.backgroundColor = [UIColor whiteColor];
-    view.viewName = @"MainControllerView";
-    self.view = view;
+- (instancetype)initWithTableHeadView:(UIView *)tableHeadView
+                           headHeight:(CGFloat)headHeight
+                          sectionView:(UIView *)sectionView
+                        sectionHeight:(CGFloat)sectionHeight
+                contentControlerArray:(NSArray<CommonTableController *> *)controllerArray{
+    if (self = [super init]) {
+        self.tableHeadView = tableHeadView;
+        self.tableHeadHeight = headHeight;
+        self.sectionView = sectionView;
+        self.sectionHeight = sectionHeight;
+        self.controllerArray = controllerArray;
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -43,34 +53,91 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
 #pragma clang diagnostic pop
     }
-    self.tableHeadHeight = 150.f;
-    self.sectionHeadHeight = 30.f;
-    self.cellHeight = CGRectGetHeight(self.view.bounds) - self.sectionHeadHeight;
-    
-    self.tableHeadView = [UIView new];
-    self.tableHeadView.backgroundColor = [UIColor orangeColor];
+    [self initData];
+    [self initView];
+}
+
+- (void)initData{
+    self.cellHeight = CGRectGetHeight(self.view.bounds) - self.sectionHeight;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listControllerScroll:) name:CommonTableScroll object:nil];
+}
+
+- (void)initView{
+    UITableView *bottomTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    bottomTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    bottomTableView.showsVerticalScrollIndicator = NO;
+    bottomTableView.dataSource = self;
+    bottomTableView.delegate = self;
+    [bottomTableView registerClass:[HorizonPageCell class] forCellReuseIdentifier:@"HorizonPageCell"];
+    [self.view addSubview:(_bottomTableView = bottomTableView)];
 }
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
     NSLog(@"[%@][%s]", NSStringFromClass([self class]), sel_getName(_cmd));
-    self.bottomTableView.frame = self.view.bounds;
     self.tableHeadView.bounds = CGRectMake(0, 0, CGRectGetWidth(self.bottomTableView.frame), self.tableHeadHeight);
     self.bottomTableView.tableHeaderView = self.tableHeadView;
 }
 
-#pragma mark - Getter
-- (MultipleTable *)bottomTableView{
-    if (_bottomTableView == nil) {
-        MultipleTable *bottomTableView = [[MultipleTable alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        bottomTableView.showsVerticalScrollIndicator = NO;
-//        bottomTableView.bounces = NO;
-        bottomTableView.dataSource = self;
-        bottomTableView.delegate = self;
-        [bottomTableView registerClass:[HorizonPageCell class] forCellReuseIdentifier:@"HorizonPageCell"];
-        [self.view addSubview:(_bottomTableView = bottomTableView)];
+#pragma mark - Private
+- (void)listControllerScroll:(NSNotification *)noti{
+    UIScrollView *scrollView = (MultipleTable *)noti.object;
+    if (self.currentListView == nil) {
+        self.currentListView = scrollView;
+        self.lastOffsetY = 0;
     }
-    return _bottomTableView;
+    if (self.currentListView == scrollView) {
+        CGFloat currentOffset = scrollView.contentOffset.y;
+        CGFloat deltaY = currentOffset - self.lastOffsetY;
+        if (deltaY > 0) {//drag up
+            if (self.bottomTableView.contentOffset.y < self.tableHeadHeight) {
+                scrollView.contentOffset = CGPointZero;
+            }else{
+                if (self.bottomTableView.contentOffset.y > self.tableHeadHeight) {
+                    self.bottomTableView.contentOffset = CGPointMake(0, self.tableHeadHeight);
+                }
+            }
+        }else if (deltaY < 0){//drag down
+            NSLog(@"drag down");
+            if (currentOffset > 0) {
+                NSLog(@"drag down=[xxxxx]");
+                self.bottomTableView.contentOffset = CGPointMake(0, self.tableHeadHeight);
+            }else{
+                NSLog(@"drag down=[yyyyy]");
+                scrollView.contentOffset = CGPointZero;
+            }
+        }
+        self.lastOffsetY = scrollView.contentOffset.y;
+    }
+}
+
+#pragma mark - UITableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 1;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    return self.sectionView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return self.sectionHeight;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    HorizonPageCell *horizonCell = [tableView dequeueReusableCellWithIdentifier:@"HorizonPageCell" forIndexPath:indexPath];
+    horizonCell.backgroundColor = [UIColor cyanColor];
+    __weak typeof(self) weakSelf = self;
+    horizonCell.changePage = ^(UIScrollView *listView) {
+        weakSelf.currentListView = listView;
+        weakSelf.lastOffsetY = weakSelf.currentListView.contentOffset.y;
+    };
+    horizonCell.controllerArray = self.controllerArray;
+    return horizonCell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return self.cellHeight;
 }
 
 #pragma mark - Setter
@@ -84,33 +151,7 @@
     for (CommonTableController *controller in _controllerArray) {
         [self addChildViewController:controller];
     }
-    [self.bottomTableView reloadData];
-}
-
-#pragma mark - UITableViewDataSource
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 1;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UIView *sectionHead = [[UIView alloc] init];
-    sectionHead.backgroundColor = [UIColor blackColor];
-    return sectionHead;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return self.sectionHeadHeight;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    HorizonPageCell *horizonCell = [tableView dequeueReusableCellWithIdentifier:@"HorizonPageCell" forIndexPath:indexPath];
-    horizonCell.backgroundColor = [UIColor cyanColor];
-    horizonCell.controllerArray = self.controllerArray;
-    return horizonCell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return self.cellHeight;
+    self.currentListView = controllerArray[0].tableView;
 }
 
 @end

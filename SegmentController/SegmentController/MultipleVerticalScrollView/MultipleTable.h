@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MultipleTable : UITableView
+@interface MultipleTable : UITableView <UIGestureRecognizerDelegate>
 
 @property (nonatomic, copy) NSString *deBugName;
 

@@ -16,15 +16,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SegmentController/MultipleVerticalScrollView/MainScrollController.m"
-            timestampString = "539866762.448951"
+            filePath = "SegmentController/CollectionViewPageController/PageController.m"
+            timestampString = "541332218.950222"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
          </BreakpointContent>
@@ -32,48 +32,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SegmentController/MultipleVerticalScrollView/MainScrollController.m"
-            timestampString = "539866762.44926"
+            filePath = "SegmentController/CollectionViewPageController/PageController.m"
+            timestampString = "541332218.950711"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SegmentController/MultipleVerticalScrollView/MainScrollController.m"
-            timestampString = "539866762.449333"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
-            landmarkName = "-bottomTableView"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SegmentController/MultipleVerticalScrollView/HorizonPageCell.m"
-            timestampString = "539866762.449396"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
-            landmarkName = "-setControllerArray:"
+            startingLineNumber = "41"
+            endingLineNumber = "41"
+            landmarkName = "-initWithHeadView:headViewHeight:segmentView:segmentHeight:pageArray:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -83,29 +51,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SegmentController/CollectionViewPageController/PageHeadView.m"
-            timestampString = "539866762.449597"
+            filePath = "SegmentController/CollectionViewPageController/PageController.m"
+            timestampString = "541332218.950964"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
-            landmarkName = "-pointInside:withEvent:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SegmentController/CollectionViewPageController/PageHeadView.m"
-            timestampString = "539866762.44979"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
-            landmarkName = "-hitTest:withEvent:"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "-initWithHeadView:headViewHeight:segmentView:segmentHeight:pageArray:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

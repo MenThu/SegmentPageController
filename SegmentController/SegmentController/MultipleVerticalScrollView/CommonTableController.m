@@ -8,22 +8,29 @@
 
 #import "CommonTableController.h"
 
+NSString * const CommonTableScroll = @"CommonTableScroll";
+
 @interface CommonTableController ()
 
 @end
 
 @implementation CommonTableController
 
+#pragma mark - LifeCircle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    MultipleTable *tableView = [[MultipleTable alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     if (@available(iOS 11, *)) {
-        [UIScrollView appearance].contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }else{
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wdeprecated-declarations"
         self.automaticallyAdjustsScrollViewInsets = NO;
 #pragma clang diagnostic pop
     }
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    [self.view addSubview:(_tableView = tableView)];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -31,14 +38,10 @@
     self.tableView.frame = self.view.bounds;
 }
 
-- (MultipleTable *)tableView{
-    if (_tableView == nil) {
-        MultipleTable *tableView = [[MultipleTable alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        tableView.delegate = self;
-        tableView.dataSource = self;
-        [self.view addSubview:(_tableView = tableView)];
-    }
-    return _tableView;
+#pragma mark - UIScrollViewDelegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    NSAssert(self.tableView != nil, @"scrollView不能为空");
+    [[NSNotificationCenter defaultCenter] postNotificationName:CommonTableScroll object:self.tableView];
 }
 
 #pragma mark - UITableViewDataSoure&&Delegate
@@ -49,5 +52,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     return nil;
 }
+
+#pragma mark - Getter
 
 @end

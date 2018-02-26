@@ -12,6 +12,7 @@
 @interface HorizonPageCell () <UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (nonatomic, weak) UICollectionView *pageCollectionView;
+@property (nonatomic, assign) NSInteger currentPage;
 
 @end
 
@@ -35,7 +36,6 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    NSLog(@"[%@][%s]", NSStringFromClass([self class]), sel_getName(_cmd));
     self.pageCollectionView.frame = self.contentView.bounds;
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.pageCollectionView.collectionViewLayout;
     layout.itemSize = self.pageCollectionView.bounds.size;
@@ -50,6 +50,12 @@
     PageCell *pageCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PageCell" forIndexPath:indexPath];
     pageCell.childControllerView = self.controllerArray[indexPath.row].view;
     return pageCell;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    if (scrollView == self.pageCollectionView) {
+        self.currentPage = self.pageCollectionView.contentOffset.x / CGRectGetWidth(self.pageCollectionView.bounds) + 0.5;
+    }
 }
 
 #pragma mark - Getter
@@ -72,9 +78,22 @@
 }
 
 #pragma mark - Setter
-- (void)setControllerArray:(NSArray<UIViewController *> *)controllerArray{
+- (void)setControllerArray:(NSArray <CommonTableController *> *)controllerArray{
     _controllerArray = controllerArray;
     [self.pageCollectionView reloadData];
+}
+
+- (void)setCurrentPage:(NSInteger)currentPage{
+    if (_currentPage == currentPage) {
+        return;
+    }
+    _currentPage = currentPage;
+    if (self.changePage) {
+        currentPage = MAX(0, currentPage);
+        currentPage = MIN(self.controllerArray.count-1, currentPage);
+        NSLog(@"currentPage=[%ld]", (long)currentPage);
+        self.changePage(self.controllerArray[currentPage].tableView);
+    }
 }
 
 @end

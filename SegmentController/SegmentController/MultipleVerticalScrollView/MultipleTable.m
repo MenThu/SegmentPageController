@@ -11,10 +11,11 @@
 @implementation MultipleTable
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-//    return [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]];
-    //    NSLog(@"gesture=[%p]", self);
-//    NSLog(@"[%@]", self.deBugName);
-    return YES;
+    if ([otherGestureRecognizer.view isKindOfClass:[UITableView class]]) {
+        return YES;
+    }else{
+        return NO;
+    }
 }
 
 @end

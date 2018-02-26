@@ -13,10 +13,12 @@
 #import "MainScrollController.h"
 #import "ListOneController.h"
 #import "ListTwoController.h"
+#import <objc/runtime.h>
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, weak) UITableView *testTableView;
+@property (nonatomic, strong) id testName;
 
 @end
 
@@ -34,6 +36,7 @@
 #pragma clang diagnostic pop
     }
     UITableView *testTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    testTableView.bounces = NO;
 //    testTableView.contentInset = UIEdgeInsetsMake(100, 0, 0, 0);
     testTableView.delegate = self;
     testTableView.dataSource = self;
@@ -65,20 +68,29 @@
 }
 
 - (IBAction)push2Controller:(UIButton *)sender {
-//    OneController *one = [[OneController alloc] init];
-//    TwoController *two = [[TwoController alloc] init];
-//    PageHeadView *headView = [[PageHeadView alloc] init];
-//    PageController *pageController = [[PageController alloc] init];
-//    pageController.pageArray = @[one, two];
-//    pageController.headView = headView;
-//    [self.navigationController pushViewController:pageController animated:YES];
+    OneController *one = [[OneController alloc] init];
+    TwoController *two = [[TwoController alloc] init];
+    UIView *headView = [UIView new];
+    headView.backgroundColor = [UIColor orangeColor];
     
+    UIView *segmentView = [UIView new];
+    segmentView.backgroundColor = [UIColor cyanColor];
     
-    ListOneController *oneController = [ListOneController new];
-    ListTwoController *twoController = [ListTwoController new];
-    MainScrollController *mainController = [[MainScrollController alloc] init];
-    mainController.controllerArray = @[oneController, twoController];
-    [self.navigationController pushViewController:mainController animated:YES];
+    PageController *pageController = [[PageController alloc] initWithHeadView:headView headViewHeight:100 segmentView:segmentView segmentHeight:50 pageArray:@[one, two]];
+    [self.navigationController pushViewController:pageController animated:YES];
+}
+
+
+- (void)deBugPrivateClass{
+    //UIScrollViewPanGestureRecognizer
+    //ViewController
+    unsigned int count = 0;
+    Ivar *var = class_copyIvarList(NSClassFromString(@"UIScrollViewPanGestureRecognizer"), &count);
+    for (NSInteger index = 0; index < count; index ++) {
+        Ivar _var = *(var+index);
+        NSLog(@"Encoding=[%s]", ivar_getTypeEncoding(_var));
+        NSLog(@"Name=[%s]", ivar_getName(_var));
+    }
 }
 
 
@@ -86,11 +98,7 @@
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset{
     CGPoint targetOffset = CGPointMake(targetContentOffset->x, targetContentOffset->y);
-    
-    CGFloat offsetPerVelcity = fabs(self.testTableView.contentOffset.y - targetOffset.y)/velocity.y;
-    
-    
-    NSLog(@"currentOffset=[%@]   targetOffset=[%@]   Veloticy=[%@] offsetPerVelcity:[%.2f]", NSStringFromCGPoint(self.testTableView.contentOffset),NSStringFromCGPoint(targetOffset), NSStringFromCGPoint(velocity), offsetPerVelcity);
+    NSLog(@"currentOffset=[%@]   targetOffset=[%@]   Veloticy=[%@]", NSStringFromCGPoint(self.testTableView.contentOffset), NSStringFromCGPoint(targetOffset), NSStringFromCGPoint(velocity));
 }
 
 

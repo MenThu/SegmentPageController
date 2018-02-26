@@ -14,6 +14,8 @@ UIKIT_EXTERN NSString *const SubScrollViewDidScroll;
 
 /** 列表页，需要子类赋值,可以是tableView也可是collectionView */
 @property (nonatomic, weak) UIScrollView *scrollView;
+/** 一个用于作用到scrollView的拖动手势 */
+@property (nonatomic, strong) UIPanGestureRecognizer *scrollViewPanGesture;
 /** 最大偏移量 */
 @property (nonatomic, assign) CGFloat maxOffset;
 /** 最小偏移量 */

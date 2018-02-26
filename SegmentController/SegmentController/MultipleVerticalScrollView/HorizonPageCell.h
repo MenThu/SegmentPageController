@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CommonTableController.h"
 
 @interface HorizonPageCell : UITableViewCell
 
-@property (nonatomic, weak) NSArray <UIViewController *> *controllerArray;
+@property (nonatomic, weak) NSArray <CommonTableController *> *controllerArray;
+@property (nonatomic, copy) void (^changePage) (UIScrollView *listView);
 
 @end
