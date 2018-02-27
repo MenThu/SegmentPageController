@@ -24,8 +24,7 @@ static void *SCROLLView_CONTENTOFFSET = &SCROLLView_CONTENTOFFSET;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, weak) UIScrollView *currentListView;
 @property (nonatomic, assign) BOOL isChangingContentOffset;
-@property (nonatomic, assign) CGFloat currentScrollViewContentOffsetY;
-@property (nonatomic, strong) NSMutableArray <NSNumber *> *recordListHeadHeightArry;
+@property (nonatomic, strong) NSMutableArray <NSNumber *> *recordTopViewMaxYArray;
 
 @end
 
@@ -38,7 +37,10 @@ static void *SCROLLView_CONTENTOFFSET = &SCROLLView_CONTENTOFFSET;
                    segmentHeight:(CGFloat)segmentHeight
                        pageArray:(NSArray<ListController *> *)pageArray{
     if (self = [super init]) {
-        NSLog(@"initWithHeadView");
+        NSAssert(headView != nil, @"");
+        NSAssert(headHeight > 0, @"");
+        NSAssert(segmentView != nil, @"");
+        NSAssert(segmentHeight > 0, @"");
         self.headHeight = headHeight;
         self.segmentHeight = segmentHeight;
         UIView *wholeTopView = [UIView new];
@@ -58,18 +60,18 @@ static void *SCROLLView_CONTENTOFFSET = &SCROLLView_CONTENTOFFSET;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSLog(@"viewDidLoad");
     [self configData];
     [self configController];
     [self configPageView];
     [self configWholeTopView];
+    [self changeListViewContentInset];
 }
 
 - (void)configData{
     _currentPage = -1;
     _currentListView = nil;
     _isChangingContentOffset = NO;
-    _recordListHeadHeightArry = @[].mutableCopy;
+    _recordTopViewMaxYArray = @[].mutableCopy;
 }
 
 - (void)configController{
@@ -132,8 +134,8 @@ static void *SCROLLView_CONTENTOFFSET = &SCROLLView_CONTENTOFFSET;
 }
 
 - (void)hitPoint:(CGPoint)point{
-    if (CGRectContainsPoint(self.headView.frame, point)) {
-        [self.headView addGestureRecognizer:self.currentListView.panGestureRecognizer];
+    if (CGRectContainsPoint(self.wholeTopView.frame, point)) {
+        [self.wholeTopView addGestureRecognizer:self.currentListView.panGestureRecognizer];
     }else{
         [self.currentListView addGestureRecognizer:self.currentListView.panGestureRecognizer];
     }
@@ -195,15 +197,35 @@ static void *SCROLLView_CONTENTOFFSET = &SCROLLView_CONTENTOFFSET;
                       ofObject:(__unused id)object
                         change:(NSDictionary *)change
                        context:(void *)context{
-    if(context == &SCROLLView_CONTENTOFFSET && object == self.currentListView) {
+    if(context == &SCROLLView_CONTENTOFFSET && object == self.currentListView && self.isChangingContentOffset == NO) {
         CGFloat oldOffsetY          = [change[NSKeyValueChangeOldKey] CGPointValue].y;
         CGFloat newOffsetY          = [change[NSKeyValueChangeNewKey] CGPointValue].y;
-        CGFloat deltaY              = newOffsetY - oldOffsetY;
-        if (deltaY > 0) {//drag up
-            
-        }else if (deltaY < 0){
-            
+        if (self.currentListView.isDragging == NO) {
+            return;
         }
+        CGFloat wholeTopSpace = self.headHeight + self.segmentHeight;
+        CGFloat originWidth = CGRectGetWidth(self.wholeTopView.frame);
+        if (newOffsetY < -self.headHeight - self.segmentHeight) {
+            self.wholeTopView.frame = CGRectMake(0, 0, originWidth, wholeTopSpace);
+        }
+        CGFloat deltaY = newOffsetY - oldOffsetY;
+        CGFloat originY = CGRectGetMinY(self.wholeTopView.frame);
+        if (deltaY > 0) {//drag up
+            originY -= deltaY;
+            if (originY < -self.headHeight) {
+                originY = -self.headHeight;
+            }
+        }else if (deltaY < 0){
+            if (newOffsetY > -CGRectGetMaxY(self.wholeTopView.frame)) {
+                return;
+            }
+            originY -= deltaY;
+            if (originY > 0) {
+                originY = 0;
+            }
+        }
+        self.wholeTopView.frame = CGRectMake(0, originY, originWidth, wholeTopSpace);
+        self.recordTopViewMaxYArray[_currentPage] = @(CGRectGetMaxY(self.wholeTopView.frame));
     }
 }
 
@@ -214,7 +236,6 @@ static void *SCROLLView_CONTENTOFFSET = &SCROLLView_CONTENTOFFSET;
         [self addChildViewController:controller];
         controller.view.backgroundColor = [UIColor clearColor];
     }
-    [self changeListViewContentInset];
 }
 
 //- (void)setHeadView:(PageHeadView *)headView{
@@ -239,44 +260,43 @@ static void *SCROLLView_CONTENTOFFSET = &SCROLLView_CONTENTOFFSET;
 //    }
     CGFloat wholeTopSpace = self.headHeight + self.segmentHeight;
     //代码运行到这里说明headView已经被赋值,那么headViewMaxHeight和headViewMinHeight一定有正确的值
-    [self.recordListHeadHeightArry removeAllObjects];
+    [self.recordTopViewMaxYArray removeAllObjects];
     for (ListController *listController in self.pageArray) {
         [listController.scrollView setContentInset:UIEdgeInsetsMake(wholeTopSpace, 0, 0, 0)];
         [listController.scrollView setContentOffset:CGPointMake(0, -wholeTopSpace) animated:NO];
         [self addKvoForScrollView:listController.scrollView];
-        [self.recordListHeadHeightArry addObject:@(wholeTopSpace)];
+        [self.recordTopViewMaxYArray addObject:@(wholeTopSpace)];
     }
     self.currentPage = 0;
 }
 
 - (void)setCurrentPage:(NSInteger)currentPage{
-//    if (_currentPage == currentPage) {
-//        return;
-//    }
-//    self.isChangingContentOffset = YES;
-//    _currentPage = currentPage;
-//    self.currentListView = self.pageArray[currentPage].scrollView;
-//    CGFloat lastOffsetY = self.currentListView.contentOffset.y;
-//    CGFloat headViewHeight = CGRectGetHeight(self.headView.frame);
-//    CGFloat lastHeightViewHeight = self.recordListHeadHeightArry[currentPage].floatValue;
-//    CGPoint newPoint = CGPointZero;
-//    if (lastOffsetY < -headViewHeight) {//tableView和HeadView头裂缝，需要衔接上
-//        newPoint = CGPointMake(self.currentListView.contentOffset.x, -headViewHeight);
-//    }else{
-//        CGFloat minusHeight = lastHeightViewHeight - headViewHeight;
-//        if (minusHeight != 0) {
-//            newPoint = CGPointMake(self.currentListView.contentOffset.x, self.currentListView.contentOffset.y+minusHeight);
-//        }
-//    }
-//    self.recordListHeadHeightArry[currentPage] = @(headViewHeight);
-//    __weak typeof(self) weakSelf = self;
-//    if (CGPointEqualToPoint(CGPointZero, newPoint) == NO) {
-//         self.currentListView.contentOffset = newPoint;
-//    }
-//    self.currentScrollViewContentOffsetY = self.currentListView.contentOffset.y;
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        weakSelf.isChangingContentOffset = NO;
-//    });
+    if (_currentPage == currentPage) {
+        return;
+    }
+    self.isChangingContentOffset = YES;
+    _currentPage = currentPage;
+    self.currentListView = self.pageArray[currentPage].scrollView;
+    CGFloat lastOffsetY = self.currentListView.contentOffset.y;
+    CGFloat wholeTopViewMaxY = CGRectGetMaxY(self.wholeTopView.frame);
+    CGFloat lastTopViewY = self.recordTopViewMaxYArray[currentPage].floatValue;
+    CGPoint newPoint = CGPointZero;
+    if (lastOffsetY < -wholeTopViewMaxY) {//tableView和HeadView头裂缝，需要衔接上
+        newPoint = CGPointMake(self.currentListView.contentOffset.x, -wholeTopViewMaxY);
+    }else{
+        CGFloat minusHeight = lastTopViewY - wholeTopViewMaxY;
+        if (minusHeight != 0) {
+            newPoint = CGPointMake(self.currentListView.contentOffset.x, self.currentListView.contentOffset.y+minusHeight);
+        }
+    }
+    self.recordTopViewMaxYArray[currentPage] = @(wholeTopViewMaxY);
+    __weak typeof(self) weakSelf = self;
+    if (CGPointEqualToPoint(CGPointZero, newPoint) == NO) {
+         self.currentListView.contentOffset = newPoint;
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        weakSelf.isChangingContentOffset = NO;
+    });
 }
 
 @end

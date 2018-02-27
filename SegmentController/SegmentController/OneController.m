@@ -70,6 +70,11 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"navi=[%@]\nparent=[%@]\nparent.navi=[%@]", self.navigationController, self.parentViewController, self.parentViewController.navigationController);
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     [super sendScrollNotification];//在tableView滑动的时候必须调用此方法
 }
