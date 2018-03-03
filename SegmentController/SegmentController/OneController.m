@@ -38,19 +38,14 @@
     self.scrollView = tableView;
 }
 
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    self.tableView.frame = self.view.bounds;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
-
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-//    UIView *sectionHeadView = [UIView new];
-//    sectionHeadView.backgroundColor = [UIColor orangeColor];
-//    return sectionHeadView;
-//}
-//
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-//    return 45.f;
-//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 100;
@@ -73,10 +68,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     NSLog(@"navi=[%@]\nparent=[%@]\nparent.navi=[%@]", self.navigationController, self.parentViewController, self.parentViewController.navigationController);
     [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [super sendScrollNotification];//在tableView滑动的时候必须调用此方法
 }
 
 @end

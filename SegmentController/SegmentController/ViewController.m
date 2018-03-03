@@ -46,7 +46,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+//    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -72,11 +72,13 @@
     TwoController *two = [[TwoController alloc] init];
     UIView *headView = [UIView new];
     headView.backgroundColor = [UIColor orangeColor];
-    
+
     UIView *segmentView = [UIView new];
     segmentView.backgroundColor = [UIColor cyanColor];
+
+    PageController *pageController = [[PageController alloc] initWithHeadView:headView headViewHeight:100 segmentView:segmentView segmentHeight:50 pageArray:@[one, two]];
     
-    PageController *pageController = [[PageController alloc] initWithHeadView:headView headViewHeight:180 segmentView:segmentView segmentHeight:80 pageArray:@[one, two]];
+//    MPPersonHomePageController *personHomePageController = [MPPersonHomePageController build];
     [self.navigationController pushViewController:pageController animated:YES];
 }
 
