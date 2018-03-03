@@ -12,6 +12,9 @@
 @implementation PageControllerView
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+    if (point.x <= 5) {
+        return self;
+    }
     PageController *pageController = (PageController *)self.nextResponder;
     [pageController hitPoint:point];
     return [super hitTest:point withEvent:event];

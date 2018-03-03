@@ -24,9 +24,16 @@
                    segmentHeight:(CGFloat)segmentHeight
                     pageArray:(NSArray <ListController *> *)pageArray;
 
+@property (nonatomic, weak, readonly) UICollectionView *pageView;
+@property (nonatomic, assign) CGFloat headHeight;
+@property (nonatomic, assign) CGFloat segmentHeight;
+@property (nonatomic, strong, readonly) UIView *wholeTopView;
+
 /** 响应者链开始前 */
 - (void)hitPoint:(CGPoint)point;
 /** 选择PageController的页数 */
 - (void)pageViewScroll2Page:(NSInteger)page;
+/** 分页控制器滚动到了某一页 */
+- (void)scroll2Page:(NSInteger)page;
 
 @end
