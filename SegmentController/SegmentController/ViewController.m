@@ -10,9 +10,8 @@
 #import "OneController.h"
 #import "TwoController.h"
 #import "PageController.h"
-#import "MainScrollController.h"
-#import "ListOneController.h"
-#import "ListTwoController.h"
+#import "MainTableController.h"
+#import "ContentController.h"
 #import <objc/runtime.h>
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -68,18 +67,23 @@
 }
 
 - (IBAction)push2Controller:(UIButton *)sender {
-    OneController *one = [[OneController alloc] init];
-    TwoController *two = [[TwoController alloc] init];
+//    OneController *one = [[OneController alloc] init];
+//    TwoController *two = [[TwoController alloc] init];
+//    UIView *headView = [UIView new];
+//    headView.backgroundColor = [UIColor orangeColor];
+//    UIView *segmentView = [UIView new];
+//    segmentView.backgroundColor = [UIColor cyanColor];
+//    PageController *pageController = [[PageController alloc] initWithHeadView:headView headViewHeight:100 segmentView:segmentView segmentHeight:50 pageArray:@[one, two]];
+//    [self.navigationController pushViewController:pageController animated:YES];
+    
     UIView *headView = [UIView new];
     headView.backgroundColor = [UIColor orangeColor];
-
     UIView *segmentView = [UIView new];
     segmentView.backgroundColor = [UIColor cyanColor];
-
-    PageController *pageController = [[PageController alloc] initWithHeadView:headView headViewHeight:100 segmentView:segmentView segmentHeight:50 pageArray:@[one, two]];
-    
-//    MPPersonHomePageController *personHomePageController = [MPPersonHomePageController build];
-    [self.navigationController pushViewController:pageController animated:YES];
+    ContentController *controller1 = [[ContentController alloc] init];
+    ContentController *controller2 = [[ContentController alloc] init];
+    MainTableController *mainController = [[MainTableController alloc] initWith:headView headHeight:100 segmentView:segmentView segmentHeight:50 contentController:@[controller1, controller2]];
+    [self.navigationController pushViewController:mainController animated:YES];
 }
 
 
