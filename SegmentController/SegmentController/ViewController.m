@@ -66,16 +66,18 @@
     return cell;
 }
 
+#define IS_UICollectionView_UITableView 1
 - (IBAction)push2Controller:(UIButton *)sender {
-//    OneController *one = [[OneController alloc] init];
-//    TwoController *two = [[TwoController alloc] init];
-//    UIView *headView = [UIView new];
-//    headView.backgroundColor = [UIColor orangeColor];
-//    UIView *segmentView = [UIView new];
-//    segmentView.backgroundColor = [UIColor cyanColor];
-//    PageController *pageController = [[PageController alloc] initWithHeadView:headView headViewHeight:100 segmentView:segmentView segmentHeight:50 pageArray:@[one, two]];
-//    [self.navigationController pushViewController:pageController animated:YES];
-    
+#if IS_UICollectionView_UITableView
+    OneController *one = [[OneController alloc] init];
+    TwoController *two = [[TwoController alloc] init];
+    UIView *headView = [UIView new];
+    headView.backgroundColor = [UIColor orangeColor];
+    UIView *segmentView = [UIView new];
+    segmentView.backgroundColor = [UIColor cyanColor];
+    PageController *pageController = [[PageController alloc] initWithHeadView:headView headViewHeight:100 segmentView:segmentView segmentHeight:50 pageArray:@[one, two]];
+    [self.navigationController pushViewController:pageController animated:YES];
+#else
     UIView *headView = [UIView new];
     headView.backgroundColor = [UIColor orangeColor];
     UIView *segmentView = [UIView new];
@@ -84,6 +86,8 @@
     ContentController *controller2 = [[ContentController alloc] init];
     MainTableController *mainController = [[MainTableController alloc] initWith:headView headHeight:100 segmentView:segmentView segmentHeight:50 contentController:@[controller1, controller2]];
     [self.navigationController pushViewController:mainController animated:YES];
+#endif
+
 }
 
 
