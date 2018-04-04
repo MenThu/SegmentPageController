@@ -9,9 +9,9 @@
 #import "ContentController.h"
 #import "ContentTableView.h"
 
-@interface ContentController () <UITableViewDelegate, UITableViewDataSource>
+@interface ContentController ()
 
-@property (nonatomic, weak, readwrite) ContentTableView *tableView;
+@property (nonatomic, assign) CGFloat currentOffset;
 
 @end
 
@@ -20,40 +20,35 @@
 #pragma mark - LifeCircle
 - (void)viewDidLoad {
     [super viewDidLoad];
-    ContentTableView *tableView = [[ContentTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    tableView.delegate = self;
-    tableView.dataSource = self;
-    [tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"UITableViewCell"];
-    [self.view addSubview:(_tableView = tableView)];
+    self.currentOffset = 0;
 }
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-    self.tableView.frame = self.view.bounds;
+    self.contentScrollView.frame = self.view.bounds;
 }
 
-- (void)sendScrollNotification{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"TableViewDidScroll" object:self.tableView];
+#pragma mark - Private
+- (void)scrollViewScroll{
+    CGFloat newOffsetY = self.contentScrollView.contentOffset.y;
+    CGFloat minus = newOffsetY - self.currentOffset;
+    if (minus > 0) {//drag up
+        if (self.mainScrollView.contentOffset.y < self.mainScrollViewMaxOffsetY) {
+            newOffsetY = self.currentOffset;
+            self.contentScrollView.contentOffset = CGPointMake(0, self.currentOffset);
+        }
+    }else{//drag down
+        if (self.contentScrollView.contentOffset.y < 0) {
+            newOffsetY = 0;
+            self.contentScrollView.contentOffset = CGPointZero;
+        }
+    }
+    self.currentOffset = newOffsetY;
 }
 
-#pragma mark - TableViewDataSource&Delegate
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 50;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 45.f;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell" forIndexPath:indexPath];
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row];
-    return cell;
-}
-
-#pragma mark - UIScrollViewDelegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [self sendScrollNotification];
+- (void)setContentScrollView:(UIScrollView *)contentScrollView{
+    _contentScrollView = contentScrollView;
+    contentScrollView.showsVerticalScrollIndicator = NO;
 }
 
 @end

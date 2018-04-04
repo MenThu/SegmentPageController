@@ -12,6 +12,9 @@
 #import "PageController.h"
 #import "MainTableController.h"
 #import "ContentController.h"
+#import "PersonProfileHeadView.h"
+#import "DynamicController.h"
+#import "ArticleController.h"
 #import <objc/runtime.h>
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -36,11 +39,9 @@
     }
     UITableView *testTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     testTableView.bounces = NO;
-//    testTableView.contentInset = UIEdgeInsetsMake(100, 0, 0, 0);
     testTableView.delegate = self;
     testTableView.dataSource = self;
     [self.view insertSubview:(_testTableView = testTableView) atIndex:0];
-//    [self.view addSubview:(_testTableView = testTableView)];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -66,7 +67,7 @@
     return cell;
 }
 
-#define IS_UICollectionView_UITableView 1
+#define IS_UICollectionView_UITableView 0
 - (IBAction)push2Controller:(UIButton *)sender {
 #if IS_UICollectionView_UITableView
     OneController *one = [[OneController alloc] init];
@@ -78,13 +79,12 @@
     PageController *pageController = [[PageController alloc] initWithHeadView:headView headViewHeight:100 segmentView:segmentView segmentHeight:50 pageArray:@[one, two]];
     [self.navigationController pushViewController:pageController animated:YES];
 #else
-    UIView *headView = [UIView new];
-    headView.backgroundColor = [UIColor orangeColor];
+    PersonProfileHeadView *headView = [PersonProfileHeadView loadView];
     UIView *segmentView = [UIView new];
     segmentView.backgroundColor = [UIColor cyanColor];
-    ContentController *controller1 = [[ContentController alloc] init];
-    ContentController *controller2 = [[ContentController alloc] init];
-    MainTableController *mainController = [[MainTableController alloc] initWith:headView headHeight:100 segmentView:segmentView segmentHeight:50 contentController:@[controller1, controller2]];
+    DynamicController *dynamicController = [[DynamicController alloc] init];
+    ArticleController *articleController = [[ArticleController alloc] init];
+    MainTableController *mainController = [[MainTableController alloc] initWith:headView headHeight:300 segmentView:segmentView segmentHeight:50 contentController:@[dynamicController, articleController]];
     [self.navigationController pushViewController:mainController animated:YES];
 #endif
 

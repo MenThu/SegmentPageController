@@ -10,6 +10,4 @@
 
 @interface ContentTableView : UITableView <UIGestureRecognizerDelegate>
 
-@property (nonatomic, assign) BOOL isGestureDown;
-
 @end

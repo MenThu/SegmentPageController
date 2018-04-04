@@ -19,43 +19,11 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
     UIView *otherView = otherGestureRecognizer.view;
-    self.isGestureDown = NO;
-    if (otherView == self.mainTableView) {
-        if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-            UIPanGestureRecognizer *panGesture = (UIPanGestureRecognizer *)gestureRecognizer;
-            CGFloat yVelCity = [panGesture velocityInView:self].y;
-            if (yVelCity > 0) {
-                if (self.contentOffset.y > 0) {
-                    NSLog(@"向下拖拽=[不传递]");
-                    self.isGestureDown = NO;
-                }else{
-                    NSLog(@"向下拖拽=[传递]");
-                    self.isGestureDown = YES;
-                }
-            }else{
-                NSLog(@"向上拖拽=[传递]");
-                self.isGestureDown = YES;
-            }
-        }
+    if ([otherView isKindOfClass:[UICollectionView class]]) {
+        return NO;
     }else{
-        self.isGestureDown = NO;
+        return YES;
     }
-    return self.isGestureDown;
-}
-
-- (UITableView *)mainTableView{
-    if (_mainTableView == nil) {
-        UIResponder *responder = self.nextResponder;
-        while (responder) {
-            if ([responder isKindOfClass:[MainTableController class]]) {
-                MainTableController *controller = (MainTableController *)responder;
-                _mainTableView = controller.tableView;
-                break;
-            }
-            responder = responder.nextResponder;
-        }
-    }
-    return _mainTableView;
 }
 
 @end

@@ -19,24 +19,8 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SegmentController/MultipleVerticalScrollView/Controller/MainTableController.m"
-            timestampString = "541929673.403289"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
-            landmarkName = "-contentScrollViewDidScoll:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "SegmentController/MultipleVerticalScrollView/Controller/MainTableView.m"
-            timestampString = "541929673.403633"
+            timestampString = "544501438.560142"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "24"
@@ -51,13 +35,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SegmentController/MultipleVerticalScrollView/View/ContentTableView.m"
-            timestampString = "542085579.348425"
+            filePath = "SegmentController/MultipleVerticalScrollView/Controller/MainTableController.m"
+            timestampString = "544525398.74615"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
-            landmarkName = "-gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
+            landmarkName = "-changePage"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -67,13 +51,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SegmentController/MultipleVerticalScrollView/View/ContentTableView.m"
-            timestampString = "542085579.3487689"
+            filePath = "SegmentController/MultipleVerticalScrollView/Controller/MainTableController.m"
+            timestampString = "544525398.746345"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "-gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
+            landmarkName = "-setCurrentPage:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -83,13 +67,45 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SegmentController/MultipleVerticalScrollView/View/ContentTableView.m"
-            timestampString = "542085579.348995"
+            filePath = "SegmentController/MultipleVerticalScrollView/Controller/ContentController.m"
+            timestampString = "544525398.746473"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "-gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "-scrollViewScroll"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SegmentController/MultipleVerticalScrollView/Controller/MainTableController.m"
+            timestampString = "544525398.7470109"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "223"
+            endingLineNumber = "223"
+            landmarkName = "-scrollViewDidScroll:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SegmentController/MultipleVerticalScrollView/Controller/MainTableController.m"
+            timestampString = "544525398.747179"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
+            landmarkName = "-changeWholeTopFrame"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

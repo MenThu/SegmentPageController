@@ -11,7 +11,16 @@
 
 @interface ContentController : UIViewController
 
-@property (nonatomic, weak, readonly) ContentTableView *tableView;
-- (void)sendScrollNotification;
+/** 竖直滚动的内容视图 */
+@property (nonatomic, weak) UIScrollView *contentScrollView;
+
+/** 最底部的竖直滑动视图 */
+@property (nonatomic, weak) UIScrollView *mainScrollView;
+
+/** 最底部的竖直滑动视图的最大偏移量 */
+@property (nonatomic, assign) CGFloat mainScrollViewMaxOffsetY;
+
+/** 当contentScrollvewi发生滚动的时候，调用该方法 */
+- (void)scrollViewScroll;
 
 @end
